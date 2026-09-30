@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>小红书图文导出示例</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#e5e7eb; display:flex; flex-direction:column; align-items:center; gap:40px; padding:40px 0; font-family:"PingFang SC","Microsoft YaHei",sans-serif; }
+
+/* 每个.page就是一张图，固定尺寸 3:4 */
+.page { width:1080px; height:1440px; background:linear-gradient(180deg,#faf5ff 0%,#fff 100%);
+        display:flex; flex-direction:column; align-items:center; justify-content:center;
+        position:relative; overflow:hidden; flex-shrink:0; }
+
+.hl { color:#7c3aed; }
+.yl { color:#fbbf24; }
+
+.btn { position:fixed; top:24px; right:24px; z-index:9999; padding:16px 32px; font-size:22px;
+       background:#818cf8; color:#fff; border:none; border-radius:12px; cursor:pointer; }
+.btn:hover { background:#6366f1; }
+</style>
+</head>
+<body>
+
+<!-- 第1张：示例图卡（把这里的内容换成你自己的） -->
+<div class="page">
+  <div style="font-size:44px;color:#64748b;letter-spacing:8px;margin-bottom:60px;">示例图卡 · 第1张</div>
+  <div style="font-size:140px;font-weight:800;line-height:1.3;text-align:center;">
+    把 HTML<br>变成<span class="hl">高清图</span>
+  </div>
+  <div style="font-size:40px;color:#1e293b;margin-top:80px;">一键导出 · <span class="yl">画质无损</span></div>
+</div>
+
+<!-- 第2张：示例图卡 -->
+<div class="page">
+  <div style="font-size:44px;color:#64748b;letter-spacing:8px;margin-bottom:60px;">示例图卡 · 第2张</div>
+  <div style="display:flex;gap:40px;">
+    <div style="background:#f5f3ff;border-radius:24px;padding:60px 50px;text-align:center;width:280px;">
+      <div style="font-size:110px;font-weight:800;color:#16a34a;">3步</div>
+      <div style="font-size:32px;color:#1e293b;margin-top:20px;">写好 HTML</div>
+    </div>
+    <div style="background:#f5f3ff;border-radius:24px;padding:60px 50px;text-align:center;width:280px;">
+      <div style="font-size:110px;font-weight:800;color:#7c3aed;">1键</div>
+      <div style="font-size:32px;color:#1e293b;margin-top:20px;">批量导出</div>
+    </div>
+    <div style="background:#f5f3ff;border-radius:24px;padding:60px 50px;text-align:center;width:280px;">
+      <div style="font-size:110px;font-weight:800;color:#fbbf24;">2倍</div>
+      <div style="font-size:32px;color:#1e293b;margin-top:20px;">高清无损</div>
+    </div>
+  </div>
+  <div style="font-size:38px;color:#64748b;margin-top:90px;">打开 demo 试一次就懂</div>
+</div>
+
+<!-- 导出按钮（本地引入库，不要用CDN，会被浏览器跟踪防护拦截） -->
+<script src="lib/html-to-image.min.js"></script>
+<script>
+window.onload = ()=>{
+  const btn = document.createElement('button');
+  btn.innerText='导出全部图片';
+  btn.className='btn';
+  btn.onclick=async ()=>{
+    btn.innerText='生成中...';
+    const pages = document.querySelectorAll('.page');
+    for(let i=0;i<pages.length;i++){
+      const blob = await htmlToImage.toBlob(pages[i], {pixelRatio: 2, width: 1080, height: 1440, scrollX: 0, scrollY: 0});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `图文_第${i+1}张.png`;
+      a.click();
+      await new Promise(r=>setTimeout(r,800));
+    }
+    btn.innerText='导出全部图片';
+    alert('2张图片下载完成！');
+  };
+  document.body.appendChild(btn);
+};
+</script>
+</body>
+</html>
